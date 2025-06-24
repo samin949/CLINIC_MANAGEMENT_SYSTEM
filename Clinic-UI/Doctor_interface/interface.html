@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clinic Management Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/><style>
+    :root {
+      --primary-color: #0288d1;
+      --primary-hover: #0277bd;
+      --shadow-color: rgba(0, 0, 0, 0.2);
+      --border-radius: 12px;
+      --text-color: #333;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Roboto", sans-serif;
+      background-color: #e0f7fa;
+      color: var(--text-color);
+      display: flex;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--primary-color);
+      padding: 30px 15px;
+      position: fixed;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 2px 0 10px var(--shadow-color);
+    }
+
+    .sidebar .logo img {
+      width: 150px;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: -20px;
+    }
+
+    .sidebar .nav-links {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.sidebar .nav-links a {
+  display: block;
+  text-decoration: none;
+  color: #fff;
+  padding: 12px 15px;
+  margin: 10px 0;
+  background-color: rgba(2, 136, 209, 0.8);
+  text-align: center;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease, text-shadow 0.3s ease;
+}
+
+.sidebar .nav-links a:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-3px);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+.sidebar .nav-links button {
+  all: unset; /* Reset default button styles */
+  display: block;
+  width: 85%;
+  color: #fff;
+  padding: 12px 15px;
+  margin: 6px 0;
+  background-color: rgba(2, 136, 209, 0.8);
+  text-align: center;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, text-shadow 0.3s ease;
+  text-align: center;
+}
+
+.sidebar .nav-links button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-3px);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+
+
+    .main-content {
+      margin-left: 250px;
+      width: calc(100% - 250px);
+      padding: 20px 40px;
+    }
+
+
+    .navbar {
+      background: #b3e5fc;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #81d4fa;
+    }
+
+    .hero {
+  background: linear-gradient(90deg, var(--primary-color) 0%, #81d4fa 100%);
+  color: #fff;
+  padding: 50px 20px;         /* original padding */
+  text-align: center;
+  border-radius: 10px;        /* original radius */
+  margin-bottom: 30px;        /* original margin */
+  box-shadow:
+    0 8px 24px rgba(2, 136, 209, 0.4),
+    inset 0 0 60px rgba(129, 212, 250, 0.5);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.4s ease;
+}
+
+.hero:hover {
+  box-shadow:
+    0 12px 36px rgba(2, 136, 209, 0.6),
+    inset 0 0 90px rgba(129, 212, 250, 0.7);
+}
+
+.hero h1 {
+  font-size: 2.5rem;          /* original size */
+  margin-bottom: 20px;
+  font-weight: 700;           /* original weight */
+  letter-spacing: 0.05em;
+  text-shadow:
+    0 2px 8px rgba(0, 91, 182, 0.85),
+    0 0 12px rgba(129, 212, 250, 0.8);
+  transition: text-shadow 0.4s ease;
+}
+
+.hero:hover h1 {
+  text-shadow:
+    0 4px 14px rgba(0, 91, 182, 1),
+    0 0 24px rgba(129, 212, 250, 1.1);
+}
+
+
+    .hero-gifs {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .hero-gifs img {
+      width: 120px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .hover-canvas {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 370px;
+      height: 100vh;
+      background-color: #ffffff;
+      box-shadow: -4px 0 20px var(--shadow-color);
+      padding: 30px 25px;
+      transition: right 0.5s ease;
+      overflow-y: auto;
+      border-top-left-radius: var(--border-radius);
+      border-bottom-left-radius: var(--border-radius);
+      border: 1px solid rgba(2, 136, 209, 0.2);
+      z-index: 9999;
+    }
+
+    .hover-canvas.open {
+      right: 0;
+    }
+
+    .expand-btn {
+      position: fixed;
+      top: 20px;
+      right: 10px;
+      z-index: 10000;
+      font-size: 2rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .expand-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .profile-header {
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 25px;
+      color: var(--primary-color);
+      text-transform: uppercase;
+    }
+
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 35px;
+    }
+
+    .profile-picture {
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(2, 136, 209, 0.4);
+      border: 4px solid var(--primary-color);
+      width: 130px;
+      height: 130px;
+      transition: transform 0.3s ease;
+    }
+
+    .profile-picture img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-info h3 {
+      margin: 0 0 8px;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .profile-info p {
+      margin: 0;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      color: #555;
+    }
+
+    .profile-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .profile-actions button {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-actions button:hover {
+      box-shadow: 0 10px 25px rgba(2, 119, 189, 0.7);
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    .activity-display {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+	 
+   
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+  background-color: #fff;
+  padding: 24px 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.4s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+  position: relative;
+  overflow: hidden;
+  will-change: transform, box-shadow;
+}
+
+
+
+.card:hover,
+.card:focus-within {
+  transform: translateY(-10px) scale(1.07);
+  box-shadow: 0 16px 32px rgba(2, 136, 209, 0.3),
+              0 32px 48px rgba(2, 136, 209, 0.15);
+}
+
+.card:hover::before,
+.card:focus-within::before {
+  opacity: 0.15;
+}
+
+.card h3 {
+  position: relative;
+  z-index: 1;
+  color: #0288d1;
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin-bottom: 14px;
+  text-shadow: 0 0 6px rgba(2, 136, 209, 0.4);
+  transition: color 0.35s ease;
+  letter-spacing: 0.03em;
+}
+
+.card:hover h3 {
+  color: #01579b;
+  text-shadow: 0 0 12px rgba(1, 87, 155, 0.7);
+}
+
+
+
+   footer {
+  position: fixed;
+  bottom: 0;
+  left: 280px;
+  width: calc(100% - 280px);
+  background: linear-gradient(90deg, var(--primary-color) 0%, #81d4fa 100%);
+  color: #003366;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-top: 1px solid rgba(10, 50, 120, 0.5);
+  box-shadow: 0 -2px 8px rgba(10, 50, 120, 0.5);
+  z-index: 1000;
+  transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+  user-select: none;
+  cursor: default;
+}
+
+footer:hover {
+  background: linear-gradient(90deg, #1a3c72, #0a2240);
+  color: #cce6ff;
+  box-shadow: 0 -4px 14px rgba(0, 115, 230, 0.9);
+  border-top-color: rgba(0, 115, 230, 0.7);
+}
+
+#queueCountDisplay {
+  font-size: 1rem;
+  color: #e0f7fa;
+  padding: 6px 14px;
+  background-color: #039be5;
+  border-radius: 8px;
+  text-align: center;
+  animation: pulseGlow 2s infinite ease-in-out;
+  margin-top: 15px;
+  display: inline-block;
+  font-weight: 500;
+  box-shadow: 0 0 6px #4fc3f7;
+}
+
+/* Softer pulse glow animation */
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 6px #4fc3f7, 0 0 12px #4fc3f7;
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 10px #81d4fa, 0 0 20px #81d4fa;
+    transform: scale(1.03);
+  }
+  100% {
+    box-shadow: 0 0 6px #4fc3f7, 0 0 12px #4fc3f7;
+    transform: scale(1);
+  }
+}
+
+
+
+    marquee {
+      font-weight: bold;
+    }
+
+.activity-display {
+  background: linear-gradient(135deg, #0288d1, #81d4fa);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 14px 24px;
+  border-radius: 12px;
+  max-width: 1220px;         /* max width */
+  min-width: 300px;         /* minimum width */
+  width: 100%;              /* fill parent width up to max-width */
+  box-shadow: 0 6px 12px rgba(2, 136, 209, 0.3);
+  letter-spacing: 0.05em;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
+  display: inline-block;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+  word-wrap: break-word;
+  text-align: center;       /* center the text inside */
+}
+
+
+
+.activity-display:hover {
+  background: linear-gradient(135deg, #01579b, #4fc3f7);
+  box-shadow: 0 8px 20px rgba(1, 87, 155, 0.5);
+}
+
+.activity-display span#accessTime {
+  font-weight: 700;
+  padding-left: 8px;
+  position: relative;
+  color: #fff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  animation: pulseGlow 3s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.6);
+  }
+  50% {
+    text-shadow: 0 0 12px rgba(255, 255, 255, 1), 0 0 24px rgba(255, 255, 255, 0.9);
+  }
+}
+
+#bell-button {
+  background-color: #4FC3F7; /* Lighter blue */
+  color: white;
+  border: none;
+  padding: 6px 10px; /* Smaller size */
+  font-size: 1.1rem; /* Smaller font */
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 6px rgba(2, 136, 209, 0.25); /* Softer shadow */
+  margin-left: auto; /* Pushes to right if parent is flex */
+}
+
+#bell-button:hover {
+  background-color: #29B6F6; /* Slightly darker on hover */
+  transform: scale(1.1);
+}
+
+
+
+  </style>
+
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="Food.gif" alt="Logo" />
+    </div>
+    <ul class="nav-links">
+      <li><a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/interface.html">Dashboard</a></li>
+      <li><a href ="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/Sidebar_rec/Patient%20Priscription%20History.html">Patient History</a></li>
+      <li><a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/Sidebar_rec/Checkup%20Details.html">Checkup details</a></li>   
+      <li><a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/Sidebar_rec/Create%20Prescription.html">Create Prescription</a></li>
+      <button id="processPatientBtn" type="button">Process Patient</button>
+      <li><a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Portal_Login/Portal_Selection_Page/Portal%20Page.html">Logout</a></li>
+      
+    </ul>
+  </div>
+
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <section class="hero">
+      <h1>Welcome to Doctor Portal</h1>
+ <div id="queueCountDisplay">(loading...) Patients waiting.</div>
+	
+<button id="bell-button" aria-label="Play notification sound" title="Play Notification">
+    🔔
+   </button>
+      <div class="hero-gifs">
+        <img src="f1.gif" alt="GIF Left" />
+        <img src="f2.gif" alt="GIF Right" />
+      </div>
+    </section>
+
+    <section class="activity-display">
+      Accessed portal on: <span id="accessTime"></span>
+    </section>
+
+    <section class="dashboard">
+  <div class="card">
+    <h3>1. Get Patient History</h3>
+    <p>View complete medical history including past checkups and prescriptions.</p>
+  </div>
+  <div class="card">
+    <h3>2.Prescriptions</h3>
+    <p>Fetch all prescriptions associated with a specific patient.</p>
+  </div>
+  <div class="card">
+    <h3>3. Create Prescription</h3>
+    <p>Generate a new prescription with diagnosis, medication, and instructions.</p>
+  </div>
+  <div class="card">
+    <h3>4.Checkup Details</h3>
+    <p>Record vitals, symptoms, and other observations during the patient visit.</p>
+  </div>
+  <div class="card">
+    <h3>5. Process Patient</h3>
+    <p>Call and attend the next patient in the queue for consultation.</p>
+  </div>
+</section>
+
+  </div>
+
+  <!-- Hover Canvas -->
+  <div class="hover-canvas">
+    <div class="profile-header">User Profile</div>
+    <div class="profile-section">
+      <div class="profile-picture">
+        <img src="Logo.png" alt="Profile Picture" />
+      </div>
+      <div class="profile-info">
+        <h3 id="doctorName">Doctor Name</h3>
+        <p id="doctorSPECIALIZATION">Doctor</p>
+        <p id="doctorEmail">Doctor@example.com</p>
+      </div>
+    </div>
+    <div class="profile-actions">
+      <button id="viewProfileBtn">View Profile</button>
+      <button id="changePasswordBtn">Change Password</button>
+      <button id="signOutBtn">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Expand Button -->
+  <button class="expand-btn">&#8594;</button>
+
+  <!-- Footer -->
+  <footer>
+    <marquee behavior="scroll" direction="left">Made by Hassan Bukhari, Muhammud Ahmed, Samin, Moiz Sheikh.</marquee>
+  </footer>
+
+  <script>
+    document.getElementById("viewProfileBtn").onclick = () => {
+      window.location.href = "file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/Canvas/Canvas_View%20Profile.html";
+    };
+
+    document.getElementById("changePasswordBtn").onclick = () => {
+      window.location.href = "file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/Canvas/Canvas_Change%20Pass.html";
+    };
+
+    document.getElementById("signOutBtn").onclick = () => {
+      window.location.href = "file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Portal_Login/Portal_Selection_Page/Portal%20Page.html";
+    };
+
+    document.querySelector(".expand-btn").addEventListener("click", () => {
+      const canvas = document.querySelector(".hover-canvas");
+      canvas.style.right = canvas.style.right === "0px" ? "-400px" : "0px";
+    });
+
+    window.onload = () => {
+      const accessTimeElem = document.getElementById("accessTime");
+      const now = new Date();
+      accessTimeElem.textContent = now.toLocaleString("en-GB", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
+      const doctorId = window.sessionStorage.getItem("doctor_id");
+      if (doctorId) {
+        fetchDoctorInfo(doctorId);
+      } else {
+        console.warn("No Doctor_id found in sessionStorage.");
+      }
+    };
+
+    async function fetchDoctorInfo(id) {
+      try {
+        const response = await fetch(`http://localhost:4567/doctor/info?doctor_id=${id}`);
+        const data = await response.json();
+        if (response.ok && data.success) {
+          updateProfileSection(data);
+        } else {
+          console.error("Failed to fetch doctor info:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching doctor info:", error);
+      }
+    }
+
+    function updateProfileSection(data) {
+      document.getElementById("doctorName").textContent = data.name || "N/A";
+      document.getElementById("doctorEmail").textContent = data.email || "N/A";
+      document.getElementById("doctorSPECIALIZATION").textContent = data.speciality || "N/A";
+    }
+  </script>
+
+<audio id="notification-sound" src="Next.mp3" preload="auto"></audio>
+
+<script>
+  const bellButton = document.getElementById('bell-button');
+  const sound = document.getElementById('notification-sound');
+
+  bellButton.addEventListener('click', () => {
+    // Restart the sound if already playing
+    sound.currentTime = 0;
+    sound.play();
+  });
+</script>
+
+
+<script>
+  document.getElementById('processPatientBtn').addEventListener('click', function() {
+  if (confirm("Are you sure you want to process the next patient?")) {
+    // your POST request here
+    const doctorId = window.sessionStorage.getItem("doctor_id");
+    
+    fetch('http://localhost:4567/doctor/processNextPatient', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ doctorId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success !== false) {
+        alert("Patient processed successfully!");
+      } else {
+        alert("Error: " + data.message);
+      }
+    })
+    .catch(err => {
+      alert("Request failed: " + err.message);
+    });
+  }
+});
+
+</script>
+
+
+<script>
+  const doctorId =  window.sessionStorage.getItem("doctor_id"); 
+
+  async function fetchQueueCount() {
+    try {
+      const response = await fetch(`http://localhost:4567/doctor/queueCount?doctorId=${doctorId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      if (data.success) {
+        document.getElementById('queueCountDisplay').textContent = `${data.queue_count} Patients waiting.`;
+      } else {
+        document.getElementById('queueCountDisplay').textContent = 'Error fetching data.';
+      }
+    } catch (error) {
+      document.getElementById('queueCountDisplay').textContent = 'Failed to load data.';
+      console.error('Fetch error:', error);
+    }
+  }
+
+  // Fetch count immediately and then every 10 seconds
+  fetchQueueCount();
+  setInterval(fetchQueueCount, 10000);  // 10000 ms = 10 seconds
+</script>
+
+
+
+
+</body>
+</html>
+
+
+

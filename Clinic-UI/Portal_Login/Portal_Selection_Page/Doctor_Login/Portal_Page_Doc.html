@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Portal</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+	
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        font-family: "Poppins", sans-serif;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        background: linear-gradient(135deg, #0096FF, #3b6edc)
+      }
+
+      .container {
+        background: linear-gradient(135deg, #0096FF 0%, #3b6edc 120%);
+        backdrop-filter: blur(18px);
+        border-radius: 18px;
+        padding: 25px 40px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        animation: fadeIn 1s ease;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .page-heading {
+        text-align: center;
+        font-size: 26px;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 15px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 400;
+        margin-bottom: 6px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        transition: 0.3s ease;
+        backdrop-filter: blur(5px);
+      }
+
+      .form-group input:hover,
+      .form-group input:focus {
+        border-color: #ffffff;
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        outline: none;
+      }
+
+      .form-group input[type="submit"] {
+        background: #ff5e62;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+        border: none;
+      }
+
+      .form-group input[type="submit"]:hover {
+        background: #ff9966;
+        transform: scale(1.02);
+      }
+
+      .additional-links {
+        text-align: center;
+        margin-top: 15px;
+      }
+
+      .additional-links a {
+        color: #ffd1c1;
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.3s ease;
+      }
+
+      .additional-links a:hover {
+        color: #fff;
+      }
+
+      .logo {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .logo img {
+        max-width: 90px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+      }
+
+      .hover-animate {
+        display: inline-block;
+        color: white;
+        font-weight: bold;
+        transition: transform 0.3s ease, color 0.3s ease;
+        cursor: pointer;
+      }
+
+      .hover-animate:hover {
+        transform: scale(1.1);
+      }
+
+      /* Sexy Glassy Back Button */
+      .back-arrow {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: white;
+        background: rgba(40, 167, 69, 0.25);
+        border-radius: 50%;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        user-select: none;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .back-arrow:hover {
+        background-color: rgba(33, 136, 56, 0.5);
+        transform: scale(1.1);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          width: 90%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a
+        href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Portal_Login/Portal_Selection_Page/Portal%20Page.html"
+        class="back-arrow"
+        aria-label="Back to portal selection"
+        title="Back"
+        >&larr;</a
+      >
+      <div class="logo">
+        <img src="Logo.png" alt="Clinic Logo" />
+      </div>
+      <h2 class="page-heading">Doctor Login</h2>
+      <form id="login-form" action="#" method="POST">
+        <div class="form-group">
+          <label for="employee-id">Employee ID</label>
+          <input
+            type="text"
+            id="employee-id"
+            name="employee-id"
+            placeholder="Enter username"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between">
+            <label for="password">Password</label>
+            <span id="toggle-password" class="hover-animate">Show</span>
+          </div>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Login" />
+        </div>
+      </form>
+      <div class="additional-links">
+        <a href="Forget password.html">Forgot Password?</a>
+      </div>
+    </div>
+
+    <script>
+  const employeeid = document.getElementById("employee-id");
+  const passwordInput = document.getElementById("password");
+  const togglePassword = document.getElementById("toggle-password");
+  const loginForm = document.getElementById("login-form");
+  const submitButton = loginForm.querySelector('input[type="submit"]');
+
+  togglePassword.addEventListener("click", () => {
+    const type =
+      passwordInput.getAttribute("type") === "password" ? "text" : "password";
+    passwordInput.setAttribute("type", type);
+    togglePassword.textContent = type === "password" ? "Show" : "Hide";
+  });
+
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    // Animate button press
+    submitButton.style.transform = "scale(0.95)";
+    setTimeout(() => {
+      submitButton.style.transform = "scale(1)";
+    }, 150);
+
+    login(employeeid.value.trim(), passwordInput.value);
+  });
+
+  async function login(loginID, password) {
+    if (!loginID || !password) {
+      alert("Please enter both login ID and password");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:4567/doctor/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: loginID,
+          password: password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        alert("Login successful!");
+
+        // ✅ Save actual receptionist_id returned by backend
+        window.sessionStorage.setItem("doctor_id", result.doctor_id);
+
+        afterLoggingIn();
+      } else {
+        alert(result.message || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Server error. Please try again later.");
+    }
+  }
+
+  function afterLoggingIn() {
+    window.location.href =
+      "file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Portal_Login/Portal_Selection_Page/doctor_load.html";
+  }
+</script>
+
+  </body>
+</html>
+
+
+
+

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Management</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        height: 100vh;
+        background-color: #f4f7fb;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: hidden; /* Prevent horizontal scroll */
+      }
+
+      .main-content {
+        width: 100%;
+        height: 100%;
+        max-width: 100%; /* Full width */
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: auto;
+        padding: 30px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        color: #0288d1;
+      }
+
+      .search-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+
+      .search-container input {
+        padding: 12px 20px;
+        width: 250px;
+        border-radius: 6px;
+        border: 2px solid #0288d1;
+        font-size: 1rem;
+        background-color: #f4f7fb;
+      }
+
+      .search-container button,
+      button {
+        padding: 12px 20px;
+        margin-left: 10px;
+        background-color: #0288d1;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .search-container button:hover,
+      button:hover {
+        background-color: #0277bd;
+      }
+
+      .employee-table {
+        margin-top: 30px;
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .employee-table thead {
+        background-color: #0288d1;
+        color: white;
+      }
+
+      .employee-table th,
+      .employee-table td {
+        padding: 12px;
+        text-align: center;
+      }
+
+      .employee-table tbody tr:hover {
+        background-color: #e1f5fe;
+        cursor: pointer;
+      }
+
+      .employee-table tbody tr td button {
+        padding: 6px 12px;
+        background-color: #0288d1;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s ease;
+      }
+
+      .employee-table tbody tr td button:hover {
+        background-color: #0277bd;
+      }
+
+      .form-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-top: 40px;
+        width: 100%;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .form-container h2 {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: #0288d1;
+      }
+
+      .form-container input {
+        padding: 12px;
+        font-size: 1rem;
+        width: 100%;
+        border: 2px solid #0288d1;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        background-color: #f4f7fb;
+      }
+
+      .form-container button {
+        padding: 12px 20px;
+        font-size: 1rem;
+        border: none;
+        background-color: #0288d1;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s ease;
+        width: 100%;
+      }
+
+      .form-container button:hover {
+        background-color: #0277bd;
+      }
+
+      .back-btn {
+        background-color: #0288d1;
+        color: white;
+        border: 2px solid #0288d1;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-top: 20px;
+        width: auto;
+        transition: background-color 0.3s ease;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .back-btn:hover {
+        background-color: #fff;
+        color: #0288d1;
+        border-color: #0288d1;
+      }
+      .pagination {
+        padding-top: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+      }
+      #pageNum {
+        padding-top: 1rem;
+        font-weight: 500;
+        /* align-items: center; */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <div class="header">
+        <h1>Employee Details</h1>
+        <div class="search-container">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by Employee Name or ID"
+            oninput="searchEmployees()"
+          />
+          <!-- <button>Search</button> -->
+          <button onclick="scrollToForm(1); clearForm();">
+            Go to Add Employee Form
+          </button>
+        </div>
+      </div>
+
+      <!-- Employee Table -->
+      <table class="employee-table" id="employeeTable">
+        <thead>
+          <tr>
+            <th>Employee ID</th>
+            <th>Employee Name</th>
+            <th>Contact No</th>
+            <th>Emailv ID</th>
+            <th>Address</th>
+            <th>Hire Date</th>
+            <th>Date of Birth</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be populated dynamically -->
+        </tbody>
+      </table>
+      <!-- Pagination Controls -->
+      <div class="pagination">
+        <button id="prevPage" onclick="changePage('prev')">Previous</button>
+        <span id="pageNum">Page 1</span>
+        <button id="nextPage" onclick="changePage('next')">Next</button>
+      </div>
+      <!-- Add New Employee Form -->
+      <div class="form-container">
+        <h2 class="emp-form-heading">Add New Employee</h2>
+        <input type="text" id="empId" placeholder="Employee ID" />
+        <input type="text" id="empName" placeholder="Employee Name" />
+        <input type="text" id="contactNo" placeholder="Contact Number" />
+        <input type="email" id="email" placeholder="Email Address" />
+        <input type="text" id="address" placeholder="Employee Address" />
+        <label for="">HireDate</label>
+        <input type="date" id="hireDate" placeholder="Hire Date" />
+        <label for="">DOB</label>
+        <input type="date" id="dob" placeholder="Date of Birth" />
+        <button class="emp-form-button" onclick="saveEmployee()">
+          Add Employee
+        </button>
+      </div>
+
+      <!-- Back Button -->
+      <a
+        href="G:/saad/Saad/university work/semester 3/DATABASE/project/ui/FoodHeaven-UI/interface.html"
+      >
+        <button class="back-btn">Back to Dashboard</button>
+      </a>
+    </div>
+
+    <script>
+      /* const employeeData =
+              [
+                  { empId: 'E001', empName: 'John Doe', contactNo: '1234567890', email: 'john.doe@example.com', address: '123 Main St', hireDate: '2023-01-01', dob: '1990-05-15' },
+                  { empId: 'E002', empName: 'Jane Smith', contactNo: '0987654321', email: 'jane.smith@example.com', address: '456 Oak St', hireDate: '2022-06-01', dob: '1988-02-20' },
+                  { empId: 'E003', empName: 'Michael Johnson', contactNo: '1122334455', email: 'michael.johnson@example.com', address: '789 Pine St', hireDate: '2021-07-15', dob: '1985-09-25' }
+              ]; */
+      let employeeData = [];
+      let currentPage = 1;
+      const recordsPerPage = 10;
+      const empHeading = document.querySelector(".emp-form-heading");
+      const empButton = document.querySelector(".emp-form-button");
+
+      // Function to display employees in the table
+      function displayEmployees(data) {
+        const tableBody = document
+          .getElementById("employeeTable")
+          .getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = ""; // Clear the current data
+
+        const startIndex = (currentPage - 1) * recordsPerPage;
+        const endIndex = startIndex + recordsPerPage;
+        const pageData = data.slice(startIndex, endIndex);
+
+        pageData.forEach((employee) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+                          <td>${employee.EmployeeID}</td>
+                          <td>${employee.EmployeeName}</td>
+                          <td>${employee.ContactNo}</td>
+                          <td>${employee.EmailID}</td>
+                          <td>${employee.Address}</td>
+                          <td>${employee.HireDate}</td>
+                          <td>${employee.DateOfBirth}</td>
+                          <td>
+                            <div  style="display: flex; flex-direction:column; gap: 10px;">
+                              <button onclick="editEmployee('${employee.EmployeeID}'); scrollToForm(2)">Edit</button>
+                              <button onclick="removeEmployee('${employee.EmployeeID}')">Remove</button>
+                            </div>
+                          </td>
+                      `;
+          tableBody.appendChild(tr);
+        });
+
+        // Update the page number display
+        document.getElementById("pageNum").innerText = `Page ${currentPage}`;
+      }
+      async function fetchEmployees() {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/employees/get/");
+          const data = await response.json();
+          employeeData = data;
+          displayEmployees(employeeData);
+        } catch (error) {
+          console.error("Error fetching employees:", error);
+        }
+      }
+
+      function formattedDate(sqlDate) {
+        const timestamp = Date.parse(sqlDate); // Returns a valid timestamp
+        if (!isNaN(timestamp)) {
+          const parsedDate = new Date(timestamp);
+          const formattedDate = parsedDate.toISOString().split("T")[0]; // "1994-02-15"
+          return formattedDate;
+        } else {
+          console.error("Invalid date format");
+        }
+      }
+      // Initialize the employee data on page load
+      window.onload = fetchEmployees;
+      // Add or update employee
+      async function saveEmployee() {
+        const empId = Number(document.getElementById("empId").value);
+        const empName = document.getElementById("empName").value;
+        const contactNo = document.getElementById("contactNo").value;
+        const email = document.getElementById("email").value;
+        const address = document.getElementById("address").value;
+        const hireDate = document.getElementById("hireDate").value;
+        const dob = document.getElementById("dob").value;
+
+        if (
+          empId &&
+          empName &&
+          contactNo &&
+          email &&
+          address &&
+          hireDate &&
+          dob
+        ) {
+          const employee = {
+            EmployeeID: empId,
+            EmployeeName: empName,
+            ContactNo: contactNo,
+            EmailID: email,
+            Address: address,
+            HireDate: hireDate,
+            DateOfBirth: dob,
+          };
+
+          try {
+            let method = employeeData.find((e) => e.EmployeeID == empId)
+              ? "PUT"
+              : "POST";
+
+          if(empHeading.textContent == "Edit Employee")
+            method = 'PUT'
+          else
+           method = 'POST'
+          
+            const url =
+              method === "PUT"
+                ? `http://127.0.0.1:5000/employees/update/${empId}`
+                : "http://127.0.0.1:5000/employees/add";
+
+            const response = await fetch(url, {
+              method: method,
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(employee),
+            });
+
+            if (response.ok) {
+              alert("Employee saved successfully");
+              fetchEmployees();
+              clearForm();
+            } else {
+              alert("Failed to save employee");
+            }
+          } catch (error) {
+            console.error("Error saving employee:", error);
+          }
+        } else {
+          alert("Please fill all fields");
+        }
+      }
+
+      // Edit employee
+      function editEmployee(empId) {
+        const employee = employeeData.find((e) => e.EmployeeID == empId);
+
+        if (employee) {
+          document.getElementById("empId").value = employee.EmployeeID;
+          document.getElementById("empName").value = employee.EmployeeName;
+          document.getElementById("contactNo").value = employee.ContactNo;
+          document.getElementById("email").value = employee.EmailID;
+          document.getElementById("address").value = employee.Address;
+          document.getElementById("hireDate").value = formattedDate(
+            employee.HireDate
+          );
+          document.getElementById("dob").value = formattedDate(
+            employee.DateOfBirth
+          );
+        }
+      }
+
+      // Remove employee
+      async function removeEmployee(empId) {
+        const isConfirmed = confirm(
+          "Are you sure you want to delete this employee?"
+        );
+        if (isConfirmed) {
+          try {
+            const response = await fetch(
+              `http://127.0.0.1:5000/employees/delete/${empId}`,
+              { method: "DELETE" }
+            );
+
+            if (response.ok) {
+              alert("Employee removed successfully");
+              fetchEmployees();
+            } else {
+              alert("Failed to delete employee");
+            }
+          } catch (error) {
+            console.error("Error deleting employee:", error);
+          }
+        }
+      }
+      function searchEmployees() {
+        const query = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const filteredData = employeeData.filter(
+          (employee) =>
+            employee.EmployeeID.toString().includes(query) ||
+            employee.EmployeeName.toLowerCase().includes(query)
+        );
+        displayEmployees(filteredData);
+      }
+
+      // Change page (Next/Previous)
+      function changePage(direction) {
+        const totalPages = Math.ceil(employeeData.length / recordsPerPage);
+
+        if (direction === "next" && currentPage < totalPages) {
+          currentPage++;
+        } else if (direction === "prev" && currentPage > 1) {
+          currentPage--;
+        }
+
+        displayEmployees(employeeData);
+      }
+
+      // Clear form after saving
+      function clearForm() {
+        document.getElementById("empId").value = "";
+        document.getElementById("empName").value = "";
+        document.getElementById("contactNo").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("address").value = "";
+        document.getElementById("hireDate").value = "";
+        document.getElementById("dob").value = "";
+      }
+
+      function scrollToForm(num) {
+        if (num == 1) {
+          // add
+          empHeading.textContent = "Add New Employee";
+          empButton.textContent = "Add Employee";
+        } else {
+          empHeading.textContent = "Edit Employee";
+          empButton.textContent= "Edit Employee";
+        }
+
+        const formContainer = document.querySelector(".form-container");
+        formContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      window.onload = fetchEmployees;
+    </script>
+  </body>
+</html>

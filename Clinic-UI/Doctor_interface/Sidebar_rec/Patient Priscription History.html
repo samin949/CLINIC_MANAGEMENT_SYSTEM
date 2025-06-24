@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clinic Management - View Patient Prescription History</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: "Roboto", sans-serif;
+      margin: 0;
+      background-color: #f4f7fc;
+    }
+    .navbar {
+      background-color: #0288d1;
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar button {
+      background-color: #0288d1;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    .navbar button:hover {
+      background-color: #0277bd;
+    }
+    .container {
+      margin: 30px auto;
+      max-width: 1200px;
+      width: 90%;
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .search-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .search-container input {
+      padding: 12px;
+      font-size: 1rem;
+      width: 60%;
+      border: 2px solid #0288d1;
+      border-radius: 6px;
+      margin-right: 10px;
+    }
+    .search-container button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: none;
+      background-color: #0288d1;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .search-container button:hover {
+      background-color: #0277bd;
+    }
+    h1 {
+      text-align: center;
+      color: #0288d1;
+      margin-bottom: 20px;
+    }
+    .table-container {
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    table th, table td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #ddd;
+      vertical-align: middle; /* fix vertical alignment */
+    }
+    table th {
+      background-color: #0288d1;
+      color: white;
+    }
+    table tr:hover {
+      background-color: #f9f9f9;
+    }
+    .center-text {
+      text-align: center;
+    }
+    .pagination {
+      padding-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    #pageNum {
+      padding-top: 1rem;
+      font-weight: 500;
+    }
+    /* Make buttons in tables consistent */
+    table button {
+      padding: 6px 12px;
+      background-color: #0288d1;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    table button:hover {
+      background-color: #0277bd;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <span>Clinic Management - View Patient History</span>
+    <a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/interface.html">
+      <button type="button">Back to Dashboard</button>
+    </a>
+  </div>
+
+  <div class="container">
+    <h1>Patient History</h1>
+    <div class="search-container">
+      <input type="text" id="patientSearch" placeholder="Enter Patient Name to search" />
+      <button type="button" onclick="searchPatient()">Search</button>
+    </div>
+
+    <div class="table-container">
+      <table id="historyTable" aria-label="Patient History Table">
+        <thead>
+          <tr>
+            <th>Patient Name</th>
+            <th>Contact Info</th>
+            <th>Appointment Date</th>
+            <th>Payment Amount</th>
+            <th>Payment Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" aria-label="Pagination Controls">
+      <button type="button" onclick="prevPage()">Previous</button>
+      <span id="pageNum">Page 1</span>
+      <button type="button" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <div class="container" id="prescriptionContainer" style="display:none;">
+    <h1>Patient Previous Prescription</h1>
+    <div class="table-container">
+      <table id="prescriptionTable" aria-label="Prescription Table">
+        <thead>
+          <tr>
+            <th>Disease</th>
+            <th>Medicines</th>
+            <th>Dosage</th>
+            <th>Instructions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+  const baseURL = "http://localhost:4567"; // Add base URL here
+
+  // Ensure doctor_id is stored as string in sessionStorage on login
+  const currentDoctorId = sessionStorage.getItem("doctor_id");
+
+  if (!currentDoctorId) {
+    alert("You are not logged in! Please login first.");
+    window.location.href = "file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Portal_Login/Portal_Selection_Page/Doctor_Login/Portal_Page_Doc.html";
+  }
+
+  async function searchPatient() {
+    const name = document.getElementById("patientSearch").value.trim();
+    const tbody = document.querySelector("#historyTable tbody");
+    tbody.innerHTML = "";
+    document.getElementById("prescriptionContainer").style.display = "none";
+
+    if (!name) {
+      tbody.innerHTML = "<tr><td colspan='6' class='center-text'>Please enter a patient name.</td></tr>";
+      return;
+    }
+
+    try {
+      const response = await fetch(`${baseURL}/patientPrescriptionHistory?name=${encodeURIComponent(name)}&doctorId=${encodeURIComponent(currentDoctorId)}`);
+      if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+      const data = await response.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='6' class='center-text'>No records found.</td></tr>";
+        return;
+      }
+
+      data.forEach(record => {
+        const amountText = record.amount ? `Rs. ${record.amount}` : "N/A";
+        const paymentStatusText = record.payment_status || "N/A";
+        const contactInfo = record.contact_info || "N/A";
+        const appointmentDate = record.appointment_date || "N/A";
+
+        const patientId = record.patient_id ?? null;
+        const doctorId = currentDoctorId;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${record.name}</td>
+          <td>${contactInfo}</td>
+          <td>${appointmentDate}</td>
+          <td>${amountText}</td>
+          <td>${paymentStatusText}</td>
+          <td>
+            ${patientId ? `<button type="button" onclick="fetchPrescriptions(${patientId}, ${doctorId})">View Prescriptions</button>` : 'N/A'}
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    } catch (error) {
+      tbody.innerHTML = `<tr><td colspan='6' class='center-text'>Error loading patient history.</td></tr>`;
+      console.error("Error fetching patient history:", error);
+    }
+  }
+
+  async function fetchPrescriptions(patientId, doctorId) {
+    const tbody = document.querySelector("#prescriptionTable tbody");
+    const prescriptionContainer = document.getElementById("prescriptionContainer");
+    tbody.innerHTML = "";
+    prescriptionContainer.style.display = "none";
+
+    try {
+      const response = await fetch(`${baseURL}/prescriptions?patient_id=${encodeURIComponent(patientId)}&doctor_id=${encodeURIComponent(doctorId)}`);
+      if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+      const data = await response.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='4' class='center-text'>No prescriptions found for this patient.</td></tr>";
+      } else {
+        data.forEach(prescription => {
+          const disease = prescription.disease || prescription.diagnosis || "N/A";
+          const medicines = prescription.medicines || prescription.medication_details || "N/A";
+          const dosage = prescription.dosage || "N/A";
+          const instructions = prescription.instructions || "N/A";
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${disease}</td>
+            <td>${medicines}</td>
+            <td>${dosage}</td>
+            <td>${instructions}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+      prescriptionContainer.style.display = "block";
+    } catch (error) {
+      tbody.innerHTML = "<tr><td colspan='4' class='center-text'>Error loading prescriptions.</td></tr>";
+      prescriptionContainer.style.display = "block";
+      console.error("Error fetching prescriptions:", error);
+    }
+  }
+
+  // Pagination placeholders
+  function prevPage() {
+    alert("Pagination not implemented yet.");
+  }
+
+  function nextPage() {
+    alert("Pagination not implemented yet.");
+  }
+</script>
+
+</body>
+</html>
+
+

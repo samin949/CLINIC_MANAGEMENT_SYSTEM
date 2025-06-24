@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Portal - Food Heaven</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Your existing CSS unchanged */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      #bg-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+
+      .page-heading {
+        position: absolute;
+        top: 40px;
+        width: 100%;
+        text-align: center;
+        font-size: 36px;
+        color: #ffffff;
+        text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff;
+        animation: fadeInGlitter 2s ease-in-out;
+        font-weight: 600;
+        z-index: 1;
+      }
+
+      .main-container {
+        display: flex;
+        gap: 50px;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        width: 400px;
+        height: 400px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 1s ease;
+        transform-origin: center;
+        transition: all 0.3s ease;
+        text-align: center;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .container:hover {
+        transform: scale(1.05);
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20px;
+        transition: transform 0.3s ease;
+      }
+
+      .container h1 {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.5);
+        margin: 0;
+        padding: 15px 0;
+        font-weight: 600;
+        font-size: 24px;
+        color: #ffebcd;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes fadeInGlitter {
+        from {
+          opacity: 0;
+          transform: translateY(-20px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main-container {
+          flex-direction: column;
+        }
+
+        .container {
+          width: 90%;
+          height: auto;
+        }
+
+        .logo img {
+          height: auto;
+        }
+
+        .page-heading {
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background video -->
+    <video autoplay muted loop id="bg-video">
+      <source src="background.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+
+    <!-- White Glitter Heading -->
+    <h2 class="page-heading">Choose your role</h2>
+
+    <!-- Role Boxes -->
+    <div class="main-container">
+      <!-- Doctor Box -->
+      <a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Portal_Login/Portal_Selection_Page/Doctor_Login/Portal_Page_Doc.html" class="container">
+        <div class="logo">
+          <img src="Logo v2.png" alt="Doctor Logo" />
+        </div>
+        <h1>Doctor</h1>
+      </a>
+
+      <!-- Receptionist Box (Fixed class="container" added) -->
+      <a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Portal_Login/Portal_Selection_Page/Receptionist_Login/Portal_Page_Rec.html" class="container">
+        <div class="logo">
+          <img src="Logo.png" alt="Receptionist Logo" />
+        </div>
+        <h1>Receptionist</h1>
+      </a>
+    </div>
+  </body>
+</html>
+

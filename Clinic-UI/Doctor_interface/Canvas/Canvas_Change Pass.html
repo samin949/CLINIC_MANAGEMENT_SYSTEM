@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Roboto", sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #ffffff);
+      display: flex;
+      color: #333;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #0288d1;
+      padding: 30px 15px;
+      position: fixed;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar .logo img {
+      width: 150px;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: -20px;
+    }
+
+    .sidebar .nav-links {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+    }
+
+    .sidebar .nav-links a {
+      display: block;
+      text-decoration: none;
+      color: #fff;
+      padding: 12px 15px;
+      margin: 10px 0;
+      background-color: rgba(2, 136, 209, 0.8);
+      text-align: center;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .sidebar .nav-links a:hover {
+      background-color: #0277bd;
+      transform: translateY(-3px);
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 60px 20px;
+      width: calc(100% - 250px);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h1 {
+      color: #0288d1;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #0288d1;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0277bd;
+    }
+
+    #error-message,
+    #error-message-prev {
+      color: red;
+      display: none;
+      margin-top: -15px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+
+    .cancel-link {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #0288d1;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .cancel-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="Food.gif" alt="Logo" />
+    </div>
+    <ul class="nav-links">
+     <li><a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/interface.html">Dashboard</a></li>
+      <li><a href ="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/Sidebar_rec/Patient%20Priscription%20History.html">Patient History</a></li>
+      <li><a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/Sidebar_rec/Create%20Prescription.html">Create Prescription</a></li>
+      <li><a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Receptionist_interface/Sidebar_rec/Appointment.html">Checkup details</a></li>   
+      <li><a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Receptionist_interface/Sidebar_rec/Payment.html">Process Patient</a></li>
+      <li><a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Portal_Login/Portal_Selection_Page/Portal%20Page.html">Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="form-container">
+      <h1>Change Password</h1>
+      <form>
+        <label for="current-password">Current Password</label>
+        <input
+          type="password"
+          id="current-password"
+          name="current_password"
+          oninput="removeErrorMessage(0)"
+          required
+        />
+        <p id="error-message-prev">Previous Password does not match.</p>
+
+        <label for="new-password">New Password</label>
+        <input
+          type="password"
+          id="new-password"
+          name="new_password"
+          oninput="removeErrorMessage(1)"
+          required
+        />
+
+        <label for="confirm-password">Confirm New Password</label>
+        <input
+          type="password"
+          id="confirm-password"
+          name="confirm_password"
+          oninput="removeErrorMessage(1)"
+          required
+        />
+
+        <p id="error-message">Passwords do not match.</p>
+        <button type="button" onclick="submitt()">Update Password</button>
+
+        <a class="cancel-link">Back to Dashboard</a>
+      </form>
+    </div>
+  </div>
+
+<script>
+  // Remove error messages when user types
+  function removeErrorMessage(type) {
+    if (type === 0) {
+      document.getElementById("error-message-prev").style.display = "none";
+    } else if (type === 1) {
+      document.getElementById("error-message").style.display = "none";
+    }
+  }
+
+  async function submitt() {
+    const doctorId = window.sessionStorage.getItem("doctor_id");
+    if (!doctorId) {
+      alert("Doctor ID not found. Please login again.");
+      return;
+    }
+
+    const currentPassword = document.getElementById("current-password").value.trim();
+    const newPassword = document.getElementById("new-password").value.trim();
+    const confirmPassword = document.getElementById("confirm-password").value.trim();
+
+    // Validate new passwords match
+    if (newPassword !== confirmPassword) {
+      document.getElementById("error-message").style.display = "block";
+      return;
+    }
+
+    // Prepare JSON payload
+    const payload = {
+      doctor_id: parseInt(doctorId),
+      current_password: currentPassword,
+      new_password: newPassword
+    };
+
+    try {
+      const response = await fetch("http://localhost:4567/doctor/changePassword", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        alert("Password updated successfully!");
+        // Redirect to dashboard
+        window.location.href = "file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/interface.html";
+      } else {
+        // Show specific error for incorrect current password
+        if (data.message && data.message.toLowerCase().includes("current password is incorrect")) {
+          document.getElementById("error-message-prev").style.display = "block";
+        } else {
+          alert("Error: " + data.message);
+        }
+      }
+    } catch (error) {
+      alert("Server error: " + error.message);
+    }
+  }
+
+  // Back to dashboard link click
+  document.querySelector(".cancel-link").addEventListener("click", () => {
+    window.location.href = "file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/interface.html";
+  });
+
+  // (Optional) You can keep this if you want to fetch profile info on load
+  async function fetchDoctorInfo(id) {
+    try {
+      const response = await fetch(`http://localhost:4567/doctor/info?doctor_id=${id}`);
+      const data = await response.json();
+      if (response.ok && data.success) {
+        updateProfileSection(data);
+      } else {
+        console.error("Failed to fetch doctor info:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching doctor info:", error);
+    }
+  }
+
+  function updateProfileSection(data) {
+    // If you want to populate profile fields here, add those fields in your HTML
+  }
+
+  window.onload = () => {
+    const doctorId = window.sessionStorage.getItem("doctor_id");
+    if (!doctorId) {
+      alert("Doctor ID not found. Please login again.");
+      // Optionally redirect to login
+    } else {
+      fetchDoctorInfo(doctorId);
+    }
+  };
+</script>
+
+
+
+
+</body>
+</html>
+
+
+
+

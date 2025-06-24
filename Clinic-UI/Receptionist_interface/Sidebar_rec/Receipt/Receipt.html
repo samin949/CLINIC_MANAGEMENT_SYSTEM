@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Print Receipt A4 Full Page</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f1f5f9;
+    margin: 0;
+    padding: 40px 20px;
+  }
+
+  .receipt {
+    background-color: #fff;
+    padding: 50px 60px;
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.1);
+    border-top: 8px solid #0288d1;
+    max-width: 800px;
+    margin: auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  header img {
+    width: 90px;
+    margin-bottom: 10px;
+  }
+  header h1 {
+    font-size: 28px;
+    margin: 0;
+    color: #0288d1;
+  }
+  header h2 {
+    font-size: 20px;
+    margin: 5px 0 0;
+    color: #444;
+  }
+
+  .meta, .details {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  .meta p, .details p {
+    margin: 8px 0;
+    line-height: 1.6;
+  }
+
+  .line {
+    border-top: 1px dashed #ccc;
+    margin: 25px 0;
+  }
+
+  .total {
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    font-style: italic;
+    color: #555;
+    font-size: 15px;
+  }
+
+  @media print {
+    @page {
+      size: A4;
+      margin: 0;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: none;
+      -webkit-print-color-adjust: exact; /* colors print accurately */
+    }
+    /* Make receipt container fill the page */
+    .receipt {
+      box-shadow: none;
+      border-radius: 0;
+      border-top-width: 10px;
+      width: 210mm; /* full A4 width */
+      height: 297mm; /* full A4 height */
+      max-width: none;
+      margin: 0;
+      padding: 30mm 20mm; /* add printable margins inside */
+      page-break-inside: avoid;
+      box-sizing: border-box;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="receipt" id="receipt">
+  <header>
+    <img src="medical-logo-png-878.png" alt="Clinic Logo" />
+    <h1>MedCare Clinic</h1>
+    <h2>Payment Receipt</h2>
+  </header>
+
+  <div class="meta">
+    <p><strong>Receipt Date:</strong> <span id="date"></span></p>
+    <p><strong>Appointment Date:</strong> <span id="appointmentDateTime">2025-06-01 03:00 PM</span></p>
+  </div>
+
+  <div class="line"></div>
+
+  <div class="details">
+    <p><strong>Patient Name:</strong> <span id="patientName">Ahmed Ali</span></p>
+    <p><strong>Appointment ID:</strong> <span id="appointmentId">1001</span></p>
+    <p><strong>Doctor:</strong> <span id="doctorName">Dr. Sarah Khan</span></p>
+    <p><strong>Speciality:</strong> <span id="doctorSpeciality">Cardiologist</span></p>
+    <p><strong>Payment Method:</strong> <span id="method">Cash</span></p>
+    <p><strong>Status:</strong> <span id="status">Completed</span></p>
+  </div>
+
+  <div class="line"></div>
+
+  <p class="total">Total Paid: ₨<span id="amount">5000</span></p>
+
+  <div class="footer">Thank you for your visit!</div>
+</div>
+
+<script>
+  document.getElementById('date').textContent = new Date().toLocaleString();
+</script>
+
+</body>
+</html>
+
+
+
+

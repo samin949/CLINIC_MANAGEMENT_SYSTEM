@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clinic Management - Patient Checkup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    body {
+      font-family: "Roboto", sans-serif;
+      margin: 0;
+      background-color: #f4f7fc;
+    }
+
+    .navbar {
+      background-color: #0288d1;
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar button {
+      background-color: #0288d1;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+
+    .navbar button:hover {
+      background-color: #0277bd;
+    }
+
+    .container {
+      margin: 30px auto;
+      max-width: 600px;
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0288d1;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 5px;
+      font-weight: 500;
+    }
+
+    .input-with-unit,
+    .search-container {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Unified styling for all input boxes */
+    .input-with-unit input,
+    .search-container input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      text-align: left;
+    }
+
+    .search-container i {
+      position: absolute;
+      right: 12px;
+      color: #0288d1;
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    .unit-label {
+      margin-left: 8px;
+      font-weight: 500;
+      color: #555;
+      white-space: nowrap;
+    }
+
+    #patientSuggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ccc;
+      border-top: none;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 1000;
+      border-radius: 0 0 6px 6px;
+      box-sizing: border-box;
+      font-size: 0.95rem;
+    }
+
+    #patientSuggestions div {
+      padding: 10px 15px;
+      border-bottom: 1px solid #ddd;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+
+    #patientSuggestions div:hover {
+      background-color: #bbdefb;
+    }
+
+    .submit-btn {
+      background-color: #0288d1;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+      background-color: #0277bd;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .message.success {
+      color: green;
+    }
+
+    .message.error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <span>Doctor Portal - Patient Checkup</span>
+    <a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Doctor_interface/interface.html">
+      <button>Back to Dashboard</button>
+    </a>
+  </div>
+
+  <div class="container">
+    <h1>Enter Checkup Details</h1>
+
+    <label for="search">Search Patient</label>
+    <div class="search-container">
+      <input type="text" id="search" placeholder="Enter patient name..." autocomplete="off" />
+      <i class="fas fa-search"></i>
+    </div>
+    <div id="patientSuggestions"></div>
+
+    <form id="checkupForm" style="display:none;">
+      <input type="hidden" id="patientId" />
+      <input type="hidden" id="appointmentId" />
+
+      <label for="bloodPressure">Blood Pressure</label>
+      <div class="input-with-unit">
+        <input type="text" id="bloodPressure" required />
+        <span class="unit-label">mmHg</span>
+      </div>
+
+      <label for="sugarLevel">Sugar Level</label>
+      <div class="input-with-unit">
+        <input type="text" id="sugarLevel" required />
+        <span class="unit-label">mg/dL</span>
+      </div>
+
+      <label for="temperature">Temperature</label>
+      <div class="input-with-unit">
+        <input type="text" id="temperature" required />
+        <span class="unit-label">°C</span>
+      </div>
+
+      <label for="heartRate">Heart Rate</label>
+      <div class="input-with-unit">
+        <input type="text" id="heartRate" required />
+        <span class="unit-label">bpm</span>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit Checkup</button>
+    </form>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    const sessionDoctorId = sessionStorage.getItem("doctor_id");
+
+    const searchInput = document.getElementById("search");
+    const patientSuggestions = document.getElementById("patientSuggestions");
+    const patientIdInput = document.getElementById("patientId");
+    const checkupForm = document.getElementById("checkupForm");
+    const messageEl = document.getElementById("message");
+    const appointmentIdInput = document.getElementById("appointmentId");
+
+    let debounceTimeout;
+
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.trim();
+      patientIdInput.value = "";
+      appointmentIdInput.value = "";
+      checkupForm.style.display = "none";
+      messageEl.textContent = "";
+      messageEl.className = "message";
+
+      if (query.length < 2) {
+        patientSuggestions.style.display = "none";
+        patientSuggestions.innerHTML = "";
+        return;
+      }
+
+      clearTimeout(debounceTimeout);
+      debounceTimeout = setTimeout(() => {
+        fetchPatients(query);
+      }, 300);
+    });
+
+    async function fetchPatients(query) {
+      try {
+        if (!query || query.trim() === "") {
+          patientSuggestions.innerHTML = "<div>Enter a name to search</div>";
+          patientSuggestions.style.display = "block";
+          return;
+        }
+
+        const url = `http://localhost:4567/patientPrescriptionHistory?name=${encodeURIComponent(query)}&doctorId=${sessionDoctorId}`;
+        const response = await fetch(url);
+
+        if (!response.ok) throw new Error("Failed to fetch patients");
+
+        const patients = await response.json();
+
+        if (!Array.isArray(patients) || patients.length === 0) {
+          patientSuggestions.innerHTML = "<div>No patients found</div>";
+        } else {
+          // FILTER ONLY PATIENTS WITH VALID APPOINTMENTS
+          const filteredPatients = patients.filter(p => p.appointment_id && p.appointment_id !== 0);
+          if (filteredPatients.length === 0) {
+            patientSuggestions.innerHTML = "<div>No patients with appointments found</div>";
+          } else {
+            patientSuggestions.innerHTML = filteredPatients
+              .map(
+                (p) =>
+                  `<div data-id="${p.patient_id}" data-appointment="${p.appointment_id}">
+                    ${p.name} (${p.contact_info || "No contact"}) - ${p.appointment_date || ''}
+                  </div>`
+              )
+              .join("");
+          }
+        }
+
+        patientSuggestions.style.display = "block";
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+        patientSuggestions.innerHTML = "<div>Error loading patients</div>";
+        patientSuggestions.style.display = "block";
+      }
+    }
+
+    patientSuggestions.addEventListener("click", (e) => {
+      if (e.target && e.target.matches("div[data-id]")) {
+        const selectedId = e.target.getAttribute("data-id");
+        const selectedAppointmentId = e.target.getAttribute("data-appointment");
+
+        if (!selectedAppointmentId || selectedAppointmentId === "0") {
+          messageEl.textContent = "Cannot select a patient without an appointment.";
+          messageEl.className = "message error";
+          return;
+        }
+
+        const selectedName = e.target.textContent;
+
+        searchInput.value = selectedName.trim();
+        patientIdInput.value = selectedId;
+        appointmentIdInput.value = selectedAppointmentId;
+
+        checkupForm.style.display = "block";
+        patientSuggestions.style.display = "none";
+        messageEl.textContent = "";
+        messageEl.className = "message";
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!searchInput.contains(e.target) && !patientSuggestions.contains(e.target)) {
+        patientSuggestions.style.display = "none";
+      }
+    });
+
+    checkupForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!patientIdInput.value) {
+        messageEl.textContent = "Please select a patient from the suggestions.";
+        messageEl.className = "message error";
+        return;
+      }
+
+      const data = {
+        patient_id: patientIdInput.value,
+        appointment_id: appointmentIdInput.value,
+        doctor_id: sessionDoctorId,
+        blood_pressure: document.getElementById("bloodPressure").value.trim(),
+        sugar_level: document.getElementById("sugarLevel").value.trim(),
+        temperature: document.getElementById("temperature").value.trim(),
+        heart_rate: document.getElementById("heartRate").value.trim(),
+      };
+
+      // Basic validation
+      if (
+        !data.blood_pressure ||
+        !data.sugar_level ||
+        !data.temperature ||
+        !data.heart_rate
+      ) {
+        messageEl.textContent = "All checkup fields are required.";
+        messageEl.className = "message error";
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:4567/addCheckupDetails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          const err = await response.text();
+          throw new Error(err || "Failed to submit checkup");
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+          messageEl.textContent = "Checkup details saved successfully!";
+          messageEl.className = "message success";
+          checkupForm.reset();
+          searchInput.value = "";
+          checkupForm.style.display = "none";
+        } else {
+          messageEl.textContent = "Failed to save checkup details.";
+          messageEl.className = "message error";
+        }
+      } catch (error) {
+        messageEl.textContent = "Error: " + error.message;
+        messageEl.className = "message error";
+      }
+    });
+  </script>
+</body>
+</html>
+

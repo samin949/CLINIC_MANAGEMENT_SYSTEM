@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clinic Appointment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background-color: #0288d1;
+      color: white;
+      height: 70px;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar button {
+      background-color: #0288d1;
+      color: white;
+      border: 1px solid white;
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .navbar button:hover {
+      background-color: #0277bd;
+      transform: scale(1.05);
+    }
+
+    .container {
+      max-width: 735px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0288d1;
+      margin-bottom: 25px;
+      font-weight: 500;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    label {
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: block;
+      color: #333;
+      font-size: 1rem;
+    }
+
+    input[type="text"], select, input[type="datetime-local"] {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 1rem;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: #0288d1;
+      outline: none;
+      box-shadow: 0 0 6px rgba(2, 136, 209, 0.3);
+    }
+
+    .icon-button {
+      position: absolute;
+      top: 40px;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      fill: #0288d1;
+      padding: 0;
+      transition: transform 0.2s;
+    }
+
+    .icon-button:hover {
+      transform: scale(1.15);
+      fill: #0277bd;
+    }
+
+    .patient-search-container {
+      position: relative;
+    }
+
+    /* Improved Suggestions List Styles */
+    .suggestions-list {
+      position: absolute;
+      top: 105%;
+      left: 0;
+      width: 100%;
+      background-color: #fff;
+      border: 1.5px solid #0288d1;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      max-height: 180px;
+      overflow-y: auto;
+      box-shadow: 0 8px 16px rgba(2, 136, 209, 0.2);
+      z-index: 20;
+      font-size: 0.95rem;
+      color: #333;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      display: none; /* Hidden when empty */
+    }
+
+    .suggestions-list li {
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      border-bottom: 1px solid #eee;
+    }
+
+    .suggestions-list li:last-child {
+      border-bottom: none;
+    }
+
+    .suggestions-list li:hover {
+      background-color: #0288d1;
+      color: white;
+    }
+
+    /* Show suggestions only if not empty */
+    .suggestions-list.show {
+      display: block;
+    }
+
+    .submit-btn {
+      background: linear-gradient(to right, #0288d1, #0277bd);
+      color: white;
+      padding: 14px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(to right, #0277bd, #01579b);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <h2>Clinic Management - Appointment Form</h2>
+    <a href="file:///C:/Users/BN%20GAMING/Desktop/Clinic-UI/Receptionist_interface/interface.html"><button>Back to Dashboard</button></a>
+  </div>
+
+  <div class="container">
+    <h1>Book Appointment</h1>
+    <form id="appointmentForm" autocomplete="on">
+      <div class="patient-search-container">
+        <label for="patientSearch">Patient Search</label>
+        <input type="text" id="patientSearch" placeholder="Start typing patient name..." autocomplete="on" />
+        <ul id="patientSuggestions" class="suggestions-list"></ul>
+        <button type="button" class="icon-button patient-search-icon" title="Search patients">
+          <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14c-2.48 0-4.5-2.02-4.5-4.5S7.02 5 9.5 5 14 7.02 14 9.5 11.98 14 9.5 14z"/></svg>
+        </button>
+      </div>
+
+      <label for="specialtySelect">Select Specialty</label>
+      <select id="specialtySelect">
+        <option value="">Loading specialties...</option>
+      </select>
+
+      <label for="doctorSelect">Select Doctor</label>
+      <select id="doctorSelect">
+        <option value="">Select specialty first</option>
+      </select>
+
+      <label for="appointmentDateTime">Appointment Date & Time</label>
+      <input type="datetime-local" id="appointmentDateTime" />
+
+      <button type="button" class="submit-btn" id="bookBtn">Book Appointment</button>
+    </form>
+  </div>
+
+<script>
+  const baseURL = "http://localhost:4567";
+  const patientSearchInput = document.getElementById("patientSearch");
+  const patientSuggestionsDiv = document.getElementById("patientSuggestions");
+  const specialtySelect = document.getElementById("specialtySelect");
+  const doctorSelect = document.getElementById("doctorSelect");
+  const appointmentDateTimeInput = document.getElementById("appointmentDateTime");
+  const bookAppointmentBtn = document.getElementById("bookBtn");
+
+  let selectedPatient = null;
+
+  function debounce(fn, delay) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
+  }
+
+  async function loadSpecialties() {
+    try {
+      const response = await fetch(`${baseURL}/specialties`);
+      const data = await response.json();
+      if (data.success && Array.isArray(data.specialties)) {
+        specialtySelect.innerHTML = `<option value="">-- Select Specialty --</option>`;
+        data.specialties.forEach(s => {
+          const opt = document.createElement("option");
+          opt.value = s;
+          opt.textContent = s;
+          specialtySelect.appendChild(opt);
+        });
+      } else {
+        specialtySelect.innerHTML = `<option value="">Failed to load specialties</option>`;
+      }
+    } catch (e) {
+      specialtySelect.innerHTML = `<option value="">Error loading specialties</option>`;
+    }
+  }
+
+  async function loadDoctors(specialty) {
+    doctorSelect.innerHTML = `<option value="">Loading doctors...</option>`;
+    if (!specialty) {
+      doctorSelect.innerHTML = `<option value="">Select specialty first</option>`;
+      return;
+    }
+    try {
+      const response = await fetch(`${baseURL}/doctors?specialization=${encodeURIComponent(specialty)}`);
+      const data = await response.json();
+      if (data.success && Array.isArray(data.doctors)) {
+        doctorSelect.innerHTML = `<option value="">-- Select Doctor --</option>`;
+        data.doctors.forEach(d => {
+          const opt = document.createElement("option");
+          opt.value = d.doctor_id;
+          opt.textContent = d.name;
+          doctorSelect.appendChild(opt);
+        });
+      } else {
+        doctorSelect.innerHTML = `<option value="">No doctors found</option>`;
+      }
+    } catch (e) {
+      doctorSelect.innerHTML = `<option value="">Error loading doctors</option>`;
+    }
+  }
+
+  async function searchPatients(query) {
+    if (!query) {
+      patientSuggestionsDiv.innerHTML = "";
+      patientSuggestionsDiv.classList.remove("show");
+      selectedPatient = null;
+      return;
+    }
+    try {
+      const response = await fetch(`${baseURL}/patients?query=${encodeURIComponent(query)}`);
+      const data = await response.json();
+      if (data.success && Array.isArray(data.patients) && data.patients.length > 0) {
+        patientSuggestionsDiv.innerHTML = "";
+        data.patients.forEach(p => {
+          const li = document.createElement("li");
+          li.textContent = `${p.name} | Age: ${p.age} | Sex: ${p.sex} | Contact: ${p.contact_info}`;
+          li.addEventListener("click", () => {
+            patientSearchInput.value = p.name;
+            selectedPatient = p;
+            patientSuggestionsDiv.innerHTML = "";
+            patientSuggestionsDiv.classList.remove("show");
+          });
+          patientSuggestionsDiv.appendChild(li);
+        });
+        patientSuggestionsDiv.classList.add("show");
+      } else {
+        patientSuggestionsDiv.innerHTML = "";
+        patientSuggestionsDiv.classList.remove("show");
+        selectedPatient = null;
+      }
+    } catch (e) {
+      patientSuggestionsDiv.innerHTML = "";
+      patientSuggestionsDiv.classList.remove("show");
+      selectedPatient = null;
+    }
+  }
+
+  // Debounced input handler
+  patientSearchInput.addEventListener("input", debounce(e => {
+    searchPatients(e.target.value.trim());
+  }, 350));
+
+  // Hide suggestions when clicking outside
+  document.addEventListener("click", e => {
+    if (!patientSearchInput.contains(e.target) && !patientSuggestionsDiv.contains(e.target)) {
+      patientSuggestionsDiv.innerHTML = "";
+      patientSuggestionsDiv.classList.remove("show");
+    }
+  });
+
+  specialtySelect.addEventListener("change", () => {
+    const spec = specialtySelect.value;
+    loadDoctors(spec);
+  });
+
+  bookAppointmentBtn.addEventListener("click", async () => {
+    if (!selectedPatient) {
+      alert("Please select a patient from the suggestions.");
+      patientSearchInput.focus();
+      return;
+    }
+    if (!specialtySelect.value) {
+      alert("Please select a specialty.");
+      specialtySelect.focus();
+      return;
+    }
+    if (!doctorSelect.value) {
+      alert("Please select a doctor.");
+      doctorSelect.focus();
+      return;
+    }
+    if (!appointmentDateTimeInput.value) {
+      alert("Please select appointment date and time.");
+      appointmentDateTimeInput.focus();
+      return;
+    }
+
+
+    const appointmentData = {
+    patient_id: selectedPatient.patient_id.toString(),  // convert to string explicitly
+    doctor_id: doctorSelect.value,              // already string from select.value
+    appointment_date: appointmentDateTimeInput.value
+};
+
+
+    try {
+	
+      const response = await fetch(`${baseURL}/registerAppointment`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(appointmentData)
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert("Appointment booked successfully!");
+        // Reset form
+        patientSearchInput.value = "";
+        selectedPatient = null;
+        specialtySelect.value = "";
+        doctorSelect.innerHTML = `<option value="">Select specialty first</option>`;
+        appointmentDateTimeInput.value = "";
+      } else {
+        alert("Failed to book appointment: " + (data.message || "Unknown error"));
+      }
+    } catch (e) {
+      alert("Error while booking appointment.");
+      alert(e);
+    }
+  });
+
+  // Initialize
+  loadSpecialties();
+</script>
+
+</body>
+</html>
+
+

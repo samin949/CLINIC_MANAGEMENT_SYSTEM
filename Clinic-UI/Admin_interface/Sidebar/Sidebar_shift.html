@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shift Scheduling - Food Heaven</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Roboto", sans-serif;
+        background-color: #f0f4f8;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0288d1;
+      }
+
+      .search-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .search-container input {
+        padding: 12px;
+        font-size: 1rem;
+        width: 60%;
+        border: 2px solid #0288d1;
+        border-radius: 6px;
+        margin-right: 10px;
+      }
+
+      .search-container button {
+        padding: 12px 20px;
+        font-size: 1rem;
+        border: none;
+        background-color: #0288d1;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .search-container button:hover {
+        background-color: #0277bd;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #0288d1;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #0288d1;
+        color: white;
+        font-weight: 600;
+      }
+
+      .form-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .form-container input {
+        padding: 12px;
+        font-size: 1rem;
+        width: 180px;
+        border: 2px solid #0288d1;
+        border-radius: 6px;
+      }
+
+      .form-container button,
+      button {
+        padding: 12px 20px;
+        font-size: 1rem;
+        border: none;
+        background-color: #0288d1;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .form-container button:hover,
+      button:hover {
+        background-color: #0277bd;
+      }
+
+      .back-btn {
+        background-color: #0288d1;
+        color: white;
+        border: 2px solid #0288d1;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-top: 20px;
+        width: auto;
+        transition: background-color 0.3s ease;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .back-btn:hover {
+        background-color: #fff;
+        color: #0288d1;
+        border-color: #0288d1;
+      }
+      .pagination {
+        padding-top: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+      }
+      #pageNum {
+        padding-top: 1rem;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Shift Scheduling</h1>
+      </div>
+
+      <!-- Search Bar to Filter Employee by ID -->
+      <div class="search-container">
+        <input
+          type="text"
+          id="employeeName"
+          placeholder="Enter Employee Name to search"
+          oninput="searchShift()"
+        />
+        <button onclick="searchShift()">Search</button>
+      </div>
+
+      <!-- Table to Display Employee Shift -->
+      <table id="shiftTable">
+        <thead>
+          <tr>
+            <th>Employee Name</th>
+            <th>Shift Name</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be populated here dynamically -->
+        </tbody>
+      </table>
+      <div class="pagination">
+        <button id="prevPage" onclick="changePage('prev')">Previous</button>
+        <span id="pageNum">Page 1</span>
+        <button id="nextPage" onclick="changePage('next')">Next</button>
+      </div>
+
+      <!-- Form to Change Shift Time -->
+      <!-- <div class="form-container">
+        <input type="text" id="startTime" placeholder="Start Time (HH:MM)" />
+        <input type="text" id="endTime" placeholder="End Time (HH:MM)" />
+        <button onclick="changeShiftTime()">Update Shift</button>
+      </div> -->
+
+      <div
+        class="form-container"
+        style="border-radius: 8px; padding: 1rem; background-color: #fffdfd7e"
+      >
+        <div style="display: flex; flex-direction: column; gap: 0.5rem">
+          <h3 style="text-align: center">Shift Update</h3>
+          <div style="display: flex; flex-direction: column">
+            <label for="currentEmployeeName">Employee Name</label>
+            <input
+              type="text"
+              id="currentEmployeeName"
+              placeholder="Selected Employee Name"
+              readonly
+            />
+          </div>
+          <div style="display: flex; flex-direction: column">
+            <label for="startTime">Start Time (GMT):</label>
+            <input type="time" id="startTime" />
+          </div>
+          <div style="display: flex; flex-direction: column">
+            <label for="endTime">End Time (GMT):</label>
+            <input type="time" id="endTime" />
+          </div>
+          <button onclick="changeShiftTime()">Update Shift</button>
+        </div>
+      </div>
+
+      <!-- Back to Dashboard Button -->
+      <a
+        href="G:/saad/Saad/university work/semester 3/DATABASE/project/ui/FoodHeaven-UI/interface.html"
+      >
+        <button class="back-btn">Back to Dashboard</button>
+      </a>
+    </div>
+
+    <script>
+      // Example Shift Data (for demonstration purposes)
+      let shiftData = [];
+      let currentPage = 1;
+      const recordsPerPage = 10;
+      let currentEmployeeId = -1; // Store the employee ID for which shifts will be updated
+      let currentEmployeeName = "";
+      // Function to display shift data
+      function displayShifts(data) {
+        const tableBody = document
+          .getElementById("shiftTable")
+          .getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = ""; // Clear existing table rows
+
+        const startIndex = (currentPage - 1) * recordsPerPage;
+        const endIndex = startIndex + recordsPerPage;
+        const pageData = data.slice(startIndex, endIndex);
+        pageData.forEach((row) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+                                <td>${row.EmployeeName}</td>
+                                <td>${row.ShiftName}</td>
+                                <td>${convertDateToTime(row.StartTime)}</td>
+                                <td>${convertDateToTime(row.EndTime)}</td>
+                                <td><button onclick="editShift('${
+                                  row.EmployeeID
+                                }', '${convertDateToTime(
+            row.StartTime
+          )}', '${convertDateToTime(row.EndTime)}',
+          '${row.EmployeeName}')">Edit</button></td>
+                            `;
+          tableBody.appendChild(tr);
+        });
+
+        document.getElementById("pageNum").innerText = `Page ${currentPage}`;
+      }
+      function convertDateToTime(sqlDate) {
+        const date = new Date(sqlDate);
+
+        // Extract hours and minutes in GMT
+        const hours = date.getUTCHours().toString().padStart(2, "0"); // Ensures two digits for hours
+        const minutes = date.getUTCMinutes().toString().padStart(2, "0"); // Ensures two digits for minutes
+
+        return `${hours}:${minutes} GMT`;
+      }
+
+      async function fetchShifts() {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/shift/get/");
+          const data = await response.json();
+          shiftData = data;
+          displayShifts(shiftData);
+        } catch (error) {
+          console.error("Error fetching performance:", error);
+        }
+      }
+      window.onload = fetchShifts();
+
+      // displayShifts(shiftData);
+      // Function to search employee shift by ID
+      function searchShift() {
+        const empName = document.getElementById("employeeName").value;
+        const filteredData = shiftData.filter(
+          (record) => record.EmployeeName.includes(empName)
+        );
+        if (filteredData.length > 0) {
+         // currentEmployeeId = empId; // Store the employee ID for shift change
+          displayShifts(filteredData);
+        } else {
+          console.log("Employee ID not found.");
+        }
+      }
+
+      // Function to edit shift time
+      function editShift(empId, startTime, endTime, empName) {
+        const currentEmployeeName = document.getElementById(
+          "currentEmployeeName"
+        );
+        currentEmployeeName.value = empName;
+        currentEmployeeId = empId;
+        document.getElementById("startTime").value =
+          convertTimeStringToInputTagCompatible(startTime);
+        document.getElementById("endTime").value =
+          convertTimeStringToInputTagCompatible(endTime);
+        scrollToForm();
+      }
+      function convertTimeStringToInputTagCompatible(timeString) {
+        return (formattedTime = timeString.split(" ")[0]);
+      }
+
+      function convertTimeToSQLDateTime(timeString, sqlString) {
+        // Extract parts from "Mon, 01 Jan 1900 06:00:00 GMT"
+        const parts = sqlString.split(" ");
+        const dayOfMonth = parts[1]; // "01"
+        const month = parts[2]; // "Jan"
+        const year = parts[3]; // "1900"
+
+        // Convert month abbreviation (Jan, Feb, etc.) to numerical month (01, 02, etc.)
+        const monthMap = {
+          Jan: "01",
+          Feb: "02",
+          Mar: "03",
+          Apr: "04",
+          May: "05",
+          Jun: "06",
+          Jul: "07",
+          Aug: "08",
+          Sep: "09",
+          Oct: "10",
+          Nov: "11",
+          Dec: "12",
+        };
+
+        const numericMonth = monthMap[month]; // Get the numeric value of the month
+
+        // Construct the date in the format YYYY-MM-DD
+        const datePart = `${year}-${numericMonth}-${dayOfMonth}`;
+
+        // Construct the final datetime string (append the time with seconds)
+        const formattedDateTime = `${datePart} ${timeString}:00`; // HH:mm:00 format
+
+        return formattedDateTime; // Example: "1900-01-01 06:00:00"
+      }
+
+      // Function to change shift time
+      async function changeShiftTime() {
+        if (currentEmployeeId == -1) {
+          alert("Select an Employeee for Updating Shift!");
+          return;
+        }
+        const startTime = document.getElementById("startTime").value;
+        const endTime = document.getElementById("endTime").value;
+        const emp = shiftData.find((e) => e.EmployeeID == currentEmployeeId);
+        console.log(emp);
+        const finalStartTime = convertTimeToSQLDateTime(
+          startTime,
+          emp.StartTime
+        );
+        const finalEndTime = convertTimeToSQLDateTime(endTime, emp.EndTime);
+
+        console.log(finalStartTime, finalEndTime);
+
+        // Validate the inputs
+        if (!startTime || !endTime) {
+          alert("Please fill in all the fields.");
+          return;
+        }
+
+        // Create the data object to send in the request body
+        const data = {
+          EmployeeID: Number(emp.EmployeeID),
+          StartTime: finalStartTime,
+          EndTime: finalEndTime,
+        };
+
+        try {
+          // Send a PUT request to the Flask API
+          const response = await fetch("http://127.0.0.1:5000/shift/update/", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+
+          // Handle the response from the API
+          if (response.ok) {
+            const result = await response.json();
+            alert(result.message || "Shift updated successfully.");
+            // Optionally, you can reload or refresh the shift data here
+            fetchShifts();
+            clearForm();
+          } else {
+            const error = await response.json();
+            alert(error.error || "Failed to update shift.");
+          }
+        } catch (error) {
+          console.error("Error updating shift:", error);
+          alert("An error occurred while updating the shift.");
+        }
+      }
+      function clearForm() {
+        currentEmployeeId = -1;
+        const currentEmployeeName = document.getElementById(
+          "currentEmployeeName"
+        );
+        currentEmployeeName.value = "";
+        const start = document.getElementById("startTime");
+        start.value = "";
+        const end = document.getElementById("endTime");
+        end.value = "";
+        scrollToTop();
+      }
+      function changePage(direction) {
+        const totalPages = Math.ceil(shiftData.length / recordsPerPage);
+
+        if (direction === "next" && currentPage < totalPages) {
+          currentPage++;
+        } else if (direction === "prev" && currentPage > 1) {
+          currentPage--;
+        }
+        displayShifts(shiftData);
+      }
+      function scrollToTop() {
+        const formContainer = document.querySelector(".container");
+        formContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      function scrollToForm() {
+        const formContainer = document.querySelector(".form-container");
+        formContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    </script>
+  </body>
+</html>

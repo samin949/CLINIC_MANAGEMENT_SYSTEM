@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance View - Food Heaven</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Roboto", sans-serif;
+        background-color: #e0f7fa; /* Light blue background */
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      /* Container for the content */
+      .container {
+        width: 100%;
+        max-width: 1000px;
+        margin-top: 20px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Header Styling */
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0288d1;
+      }
+
+      /* Table Styling */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #0288d1;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #0288d1;
+        color: white;
+        font-weight: 600;
+      }
+
+      /* Back to Dashboard Button Styling */
+      .back-btn {
+        background-color: #0288d1;
+        color: white;
+        border: 2px solid #0288d1;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        width: auto;
+        transition: background-color 0.3s ease, border-color 0.3s ease,
+          color 0.3s ease;
+        margin-top: 20px;
+        text-align: center;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .back-btn:hover {
+        background-color: #fff;
+        color: #0288d1;
+        border-color: #0288d1;
+      }
+
+      /* Input Styles for Search */
+      .search-container {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .search-container input {
+        padding: 12px;
+        font-size: 1rem;
+        width: 60%;
+        border: 2px solid #0288d1;
+        border-radius: 6px;
+        margin-right: 10px;
+      }
+
+      .search-container button,
+      button {
+        padding: 12px 20px;
+        font-size: 1rem;
+        border: none;
+        background-color: #0288d1;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .search-container button:hover,
+      button:hover {
+        background-color: #0277bd;
+      }
+      .pagination {
+        padding-top: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+      }
+      #pageNum {
+        padding-top: 1rem;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>View Employee Attendance</h1>
+      </div>
+
+      <!-- Search Bar to Filter Attendance by Employee ID -->
+      <div class="search-container">
+        <input
+          type="text"
+          id="employeeId"
+          placeholder="Enter Employee ID to search"
+          oninput="searchAttendance()"
+        />
+        <button onclick="searchAttendance()">Search</button>
+      </div>
+
+      <!-- Table to Display Attendance -->
+      <table id="attendanceTable">
+        <thead>
+          <tr>
+            <th>Employee ID</th>
+            <th>Employee Name</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be populated here dynamically -->
+        </tbody>
+      </table>
+
+      <div class="pagination">
+        <button id="prevPage" onclick="changePage('prev')">Previous</button>
+        <span id="pageNum">Page 1</span>
+        <button id="nextPage" onclick="changePage('next')">Next</button>
+      </div>
+
+      <!-- Back to Dashboard Button -->
+      <a
+        href="G:/saad/Saad/university work/semester 3/DATABASE/project/ui/FoodHeaven-UI/interface.html"
+      >
+        <button class="back-btn">Back to Dashboard</button>
+      </a>
+    </div>
+
+    <script>
+      // Example Attendance Data (for demonstration purposes)
+      let attendanceData = [];
+      let currentPage = 1;
+      const recordsPerPage = 10;
+
+      // Function to display attendance data
+      function displayAttendance(data) {
+        const tableBody = document
+          .getElementById("attendanceTable")
+          .getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = ""; // Clear existing table rows
+
+        const startIndex = (currentPage - 1) * recordsPerPage;
+        const endIndex = startIndex + recordsPerPage;
+        const pageData = data.slice(startIndex, endIndex);
+
+        pageData.forEach((row) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+                    <td>${row.employeeid}</td>
+                    <td>${row.EmployeeName}</td>
+                    <td>${row.attenddate}</td>
+                    <td>${row.status}</td>
+                `;
+          tableBody.appendChild(tr);
+        });
+
+        document.getElementById("pageNum").innerText = `Page ${currentPage}`;
+      }
+      async function fetchAttendance() {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/attendance/get/");
+          const data = await response.json();
+          attendanceData = data;
+          displayAttendance(attendanceData);
+        } catch (error) {
+          console.error("Error fetching attendance:", error);
+        }
+      }
+
+      window.onload = fetchAttendance();
+      // Function to search attendance by Employee ID
+      function searchAttendance() {
+        const empId = document.getElementById("employeeId").value.trim(); // Get and trim input
+        const filteredData = attendanceData.filter(
+          (record) => record.employeeid.toString().includes(empId) // Convert employeeid to string for comparison
+        );
+        displayAttendance(filteredData);
+      }
+
+      function changePage(direction) {
+        const totalPages = Math.ceil(attendanceData.length / recordsPerPage);
+
+        if (direction === "next" && currentPage < totalPages) {
+          currentPage++;
+        } else if (direction === "prev" && currentPage > 1) {
+          currentPage--;
+        }
+        displayAttendance(attendanceData);
+      }
+      // Display all attendance data on initial load
+      //      displayAttendance(attendanceData);
+    </script>
+  </body>
+</html>
